@@ -1,0 +1,24 @@
+query {
+    human {
+        name
+        appearsIn
+        friends(separationCount : 2) {
+            name
+            appearsIn
+            friends(separationCount : 5) {
+                name
+                appearsIn
+            }
+        }
+        ...FriendsAndFriendsFragment
+    }
+}
+
+fragment FriendsAndFriendsFragment on Character {
+    friends {
+        name
+        friends {
+            name
+        }
+    }
+}
