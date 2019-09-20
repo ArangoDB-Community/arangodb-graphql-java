@@ -56,7 +56,7 @@ public class SelectedFieldMetadata {
         List<ArangoFilter> filters = new ArrayList<>();
 
         if (selectedField.getArguments().size() > 0) {
-            ArangoFilterGroup argumentGroup = new ArangoFilterGroup(selectedField.getArguments(), depth());
+            ArangoFilterGroup argumentGroup = new ArangoFilterGroup(selectedField, depth());
             filters.addAll(argumentGroup.getFilters());
         }
 
@@ -131,9 +131,10 @@ public class SelectedFieldMetadata {
     }
 
     private ArangoFilter typeFilter(){
+        ArangoEdgeDirective edgeDirective = new ArangoEdgeDirective(selectedField.getFieldDefinition());
         GraphQLFieldDefinition fieldDefinition = selectedField.getFieldDefinition();
         GraphQLType graphQLType = GraphQLTypeUtil.unwrapAll(fieldDefinition.getType());
         ArangoTypeDiscriminationFilterFactory typeFilterFactory = new ArangoTypeDiscriminationFilterFactory();
-        return typeFilterFactory.typeFilterFor(graphQLType);
+        return typeFilterFactory.typeFilterFor(graphQLType, edgeDirective.getCollection());
     }
 }

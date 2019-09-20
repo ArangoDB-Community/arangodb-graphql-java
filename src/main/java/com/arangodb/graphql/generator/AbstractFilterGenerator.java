@@ -76,10 +76,21 @@ public abstract class AbstractFilterGenerator implements ArangoQueryGenerator {
 
     private String filter(ArangoFilter filter, int depth) {
 
-        String prefix = depth >= 0 ? "p.vertices[" + depth + "]." : "rootVertex.";
+        boolean edgeFilter = depth >=0;
+        String prefix = edgeFilter ? "p.vertices[" + depth + "]." : "rootVertex.";
 
         StringBuilder sb = new StringBuilder();
+        StringBuilder isSameCollection = new StringBuilder();
         sb.append("FILTER (");
+
+        if(edgeFilter){
+            sb.append("(");
+            isSameCollection.append("IS_SAME_COLLECTION( \"");
+            isSameCollection.append(filter.getEdgeCollection());
+            isSameCollection.append("\", p.edges[");
+            isSameCollection.append(depth -1);
+            isSameCollection.append("]._id)");
+        }
 
         Iterator<ArangoFilter> iterator = filter.getValues().iterator();
         while (iterator.hasNext()) {
@@ -97,6 +108,16 @@ public abstract class AbstractFilterGenerator implements ArangoQueryGenerator {
             }
         }
         sb.append(")");
+
+        if(edgeFilter) {
+            sb.append(" AND ");
+            sb.append(isSameCollection.toString());
+            sb.append(") ");
+
+            sb.append(" OR (NOT ");
+            sb.append(isSameCollection.toString());
+            sb.append(")");
+        }
 
         return sb.toString();
 

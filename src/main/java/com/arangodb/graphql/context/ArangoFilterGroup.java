@@ -20,6 +20,9 @@
 
 package com.arangodb.graphql.context;
 
+import com.arangodb.graphql.schema.ArangoEdgeDirective;
+import graphql.schema.SelectedField;
+
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -37,6 +40,15 @@ public class ArangoFilterGroup {
 
     public ArangoFilterGroup(List<ArangoFilter> filters, int depth) {
         this.filters = filters;
+        this.depth = depth;
+    }
+
+    public ArangoFilterGroup(SelectedField field, int depth){
+        ArangoEdgeDirective edgeDirective = new ArangoEdgeDirective(field.getFieldDefinition());
+        this.filters = field.getArguments().entrySet()
+                .stream()
+                .map(e -> new ArangoFilter(e.getKey(), e.getValue(), edgeDirective.getCollection()))
+                .collect(Collectors.toList());
         this.depth = depth;
     }
 
