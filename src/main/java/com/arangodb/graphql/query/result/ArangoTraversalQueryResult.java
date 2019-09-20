@@ -23,6 +23,8 @@ package com.arangodb.graphql.query.result;
 import com.arangodb.graphql.context.ArangoGraphQLContext;
 import com.arangodb.graphql.query.BaseDocumentPathEntity;
 import com.arangodb.graphql.query.result.resolver.ResultResolver;
+import graphql.schema.DataFetchingEnvironment;
+import graphql.schema.GraphQLTypeUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -71,8 +73,18 @@ public class ArangoTraversalQueryResult {
      *
      * @return The result in the structure requested by the GraphQL Query
      */
-    public List<Map> getResult() {
-        return result;
+    public Object getResult() {
+        DataFetchingEnvironment environment = ctx.getEnvironment();
+        boolean isList = GraphQLTypeUtil.isList(environment.getFieldType());
+        if(isList){
+            return result;
+        }
+        else{
+            if(result.size() == 0){
+                return null;
+            }
+            return result.get(0);
+        }
     }
 
 }

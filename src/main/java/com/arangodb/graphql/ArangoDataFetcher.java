@@ -89,14 +89,13 @@ public class ArangoDataFetcher implements DataFetcher {
         return result;
     }
 
-    private List<Map> processResult(ArangoTraversalQueryResult result){
+    private Object processResult(ArangoTraversalQueryResult result){
         logger.debug("Converting paths to GraphQL Query Response");
         Instant start = Instant.now();
-        List<Map> convertedResult = result.getResult();
+        Object convertedResult = result.getResult();
         Instant finish = Instant.now();
         long duration = Duration.between(start, finish).toMillis();
         logger.debug("Response conversion completed in {}ms", duration);
-        logger.debug("GraphQL Query Response has {} elements", convertedResult.size());
         return convertedResult;
     }
 
