@@ -49,7 +49,7 @@ public class TraversalFilterGeneratorTest {
 
 
     @Before
-    public void setUp(){
+    public void setUp() {
         generator = new TraversalFilterGenerator();
         when(context.hasTraversal()).thenReturn(true);
         when(context.getTraversalFilters()).thenReturn(Arrays.asList(filterGroup));
@@ -58,49 +58,48 @@ public class TraversalFilterGeneratorTest {
 
 
     @Test
-    public void generateAqlSingleNumericFilter(){
+    public void generateAqlSingleNumericFilter() {
 
         when(filterGroup.getFilters()).thenReturn(Arrays.asList(
                 new ArangoFilter("jersey", 29, "edgeCollectionName")
         ));
 
-        assertThat(generator.generateAql(context), equalTo("FILTER (p.vertices[2].jersey == 29) AND IS_SAME_COLLECTION( \"edgeCollectionName\", p.edges[1]._id)) OR (NOT IS_SAME_COLLECTION(\"edgeCollectionName\", p.edges[1]._id))"));
+        assertThat(generator.generateAql(context), equalTo("FILTER ((p.vertices[2].jersey == 29) AND IS_SAME_COLLECTION(\"edgeCollectionName\", p.edges[1]._id)) OR (NOT IS_SAME_COLLECTION(\"edgeCollectionName\", p.edges[1]._id))"));
 
     }
 
     @Test
-    public void generateAqlSingleNonNumericFilter(){
+    public void generateAqlSingleNonNumericFilter() {
 
         when(filterGroup.getFilters()).thenReturn(Arrays.asList(
                 new ArangoFilter("name", "Felix Potvin", "edgeCollectionName")
         ));
 
-        assertThat(generator.generateAql(context), equalTo("FILTER (p.vertices[2].name == \"Felix Potvin\") AND IS_SAME_COLLECTION( \"edgeCollectionName\", p.edges[1]._id)) OR (NOT IS_SAME_COLLECTION(\"edgeCollectionName\", p.edges[1]._id))"));
+        assertThat(generator.generateAql(context), equalTo("FILTER ((p.vertices[2].name == \"Felix Potvin\") AND IS_SAME_COLLECTION(\"edgeCollectionName\", p.edges[1]._id)) OR (NOT IS_SAME_COLLECTION(\"edgeCollectionName\", p.edges[1]._id))"));
 
     }
 
 
-
     @Test
-    public void generateAqlMultipleNonNumericFilter(){
+    public void generateAqlMultipleNonNumericFilter() {
 
         when(filterGroup.getFilters()).thenReturn(Arrays.asList(
                 new ArangoFilter("name", "Felix Potvin", "edgeCollectionName"),
                 new ArangoFilter("jersey", 29, "edgeCollectionName")
         ));
 
-        assertThat(generator.generateAql(context), equalTo("FILTER (p.vertices[2].name == \"Felix Potvin\")\nFILTER (p.vertices[2].jersey == 29) AND IS_SAME_COLLECTION( \"edgeCollectionName\", p.edges[1]._id)) OR (NOT IS_SAME_COLLECTION(\"edgeCollectionName\", p.edges[1]._id))"));
+        assertThat(generator.generateAql(context), equalTo("FILTER ((p.vertices[2].name == \"Felix Potvin\") AND IS_SAME_COLLECTION(\"edgeCollectionName\", p.edges[1]._id)) OR (NOT IS_SAME_COLLECTION(\"edgeCollectionName\", p.edges[1]._id))\nFILTER ((p.vertices[2].jersey == 29) AND IS_SAME_COLLECTION(\"edgeCollectionName\", p.edges[1]._id)) OR (NOT IS_SAME_COLLECTION(\"edgeCollectionName\", p.edges[1]._id))"));
 
     }
 
     @Test
-    public void generateAqlMultiValueFilter(){
+    public void generateAqlMultiValueFilter() {
 
         when(filterGroup.getFilters()).thenReturn(Arrays.asList(
                 new ArangoFilter("jersey", Arrays.asList(29, 93), "edgeCollectionName")
         ));
 
-        assertThat(generator.generateAql(context), equalTo("FILTER (p.vertices[2].jersey == 29 || p.vertices[2].jersey == 93) AND IS_SAME_COLLECTION( \"edgeCollectionName\", p.edges[1]._id)) OR (NOT IS_SAME_COLLECTION(\"edgeCollectionName\", p.edges[1]._id))"));
+        assertThat(generator.generateAql(context), equalTo("FILTER ((p.vertices[2].jersey == 29 || p.vertices[2].jersey == 93) AND IS_SAME_COLLECTION(\"edgeCollectionName\", p.edges[1]._id)) OR (NOT IS_SAME_COLLECTION(\"edgeCollectionName\", p.edges[1]._id))"));
 
     }
 

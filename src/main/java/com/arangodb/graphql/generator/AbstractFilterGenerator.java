@@ -85,7 +85,7 @@ public abstract class AbstractFilterGenerator implements ArangoQueryGenerator {
 
         if(edgeFilter){
             sb.append("(");
-            isSameCollection.append("IS_SAME_COLLECTION( \"");
+            isSameCollection.append("IS_SAME_COLLECTION(\"");
             isSameCollection.append(filter.getEdgeCollection());
             isSameCollection.append("\", p.edges[");
             isSameCollection.append(depth -1);
@@ -112,7 +112,7 @@ public abstract class AbstractFilterGenerator implements ArangoQueryGenerator {
         if(edgeFilter) {
             sb.append(" AND ");
             sb.append(isSameCollection.toString());
-            sb.append(") ");
+            sb.append(")");
 
             sb.append(" OR (NOT ");
             sb.append(isSameCollection.toString());
