@@ -36,6 +36,8 @@ public class ArangoFilter {
 
     private final List values;
 
+    private String edgeCollection;
+
     public ArangoFilter(String key, Object value) {
         this.key = key;
         if (value instanceof Collection) {
@@ -43,6 +45,11 @@ public class ArangoFilter {
         } else {
             this.values = Arrays.asList(value);
         }
+    }
+
+    public ArangoFilter(String key, Object value, String edgeCollection) {
+        this(key, value);
+        this.edgeCollection = edgeCollection;
     }
 
     public String getKey() {
@@ -53,4 +60,7 @@ public class ArangoFilter {
         return values;
     }
 
+    public String getEdgeCollection() {
+        return edgeCollection;
+    }
 }

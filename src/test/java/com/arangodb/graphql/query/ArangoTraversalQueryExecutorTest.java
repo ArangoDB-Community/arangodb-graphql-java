@@ -25,6 +25,8 @@ import com.arangodb.ArangoDB;
 import com.arangodb.ArangoDatabase;
 import com.arangodb.graphql.context.ArangoGraphQLContext;
 import com.arangodb.graphql.query.result.ArangoTraversalQueryResult;
+import graphql.schema.DataFetchingEnvironment;
+import graphql.schema.GraphQLOutputType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,6 +37,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -58,6 +61,12 @@ public class ArangoTraversalQueryExecutorTest {
     @Mock
     private ArangoGraphQLContext context;
 
+    @Mock
+    private DataFetchingEnvironment dataFetchingEnvironment;
+
+    @Mock
+    private GraphQLOutputType outputType;
+
     private ArangoTraversalQueryExecutor executor;
 
     @Before
@@ -75,13 +84,15 @@ public class ArangoTraversalQueryExecutorTest {
         when(arango.db("my_db")).thenReturn(database);
         when(database.query(any(), any(), any(), any())).thenReturn(cursor);
         when(cursor.asListRemaining()).thenReturn(Collections.EMPTY_LIST);
+        when(context.getEnvironment()).thenReturn(dataFetchingEnvironment);
+        when(dataFetchingEnvironment.getFieldType()).thenReturn(outputType);
 
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
 
         ArangoTraversalQueryResult result = executor.execute(query);
 
 
-        assertThat(result.getResult().size(), equalTo(0));
+        assertThat(result.getResult(), nullValue());
 
         verify(database).query(captor.capture(), any(), any(), any());
         assertThat(captor.getValue(), equalTo("RETURN 1"));

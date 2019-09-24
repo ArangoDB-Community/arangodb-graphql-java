@@ -41,6 +41,10 @@ public class ArangoTypeDiscriminationFilterFactory  {
     }
 
     public ArangoFilter typeFilterFor(GraphQLType type){
+        return typeFilterFor(type, null);
+    }
+
+    public ArangoFilter typeFilterFor(GraphQLType type, String edgeCollection){
         GraphQLType graphQLType = GraphQLTypeUtil.unwrapAll(type);
 
         if(graphQLType instanceof GraphQLObjectType) {
@@ -60,7 +64,7 @@ public class ArangoTypeDiscriminationFilterFactory  {
                     alias = graphQLType.getName();
                 }
 
-                return new ArangoFilter(discriminator.get(), alias);
+                return new ArangoFilter(discriminator.get(), alias, edgeCollection);
 
             }
 
