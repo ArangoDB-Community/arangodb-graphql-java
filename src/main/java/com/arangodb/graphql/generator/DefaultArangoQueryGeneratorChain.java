@@ -47,6 +47,8 @@ public class DefaultArangoQueryGeneratorChain extends ArangoQueryGeneratorChain 
     public DefaultArangoQueryGeneratorChain() {
         with(new WithGenerator());
         with(new RootForGenerator());
+        with(new SortGenerator());
+        with(new LimitGenerator());
         with(new RootFilterGenerator());
         with(new TraversalForGenerator());
         with(new EdgeCollectionGenerator());

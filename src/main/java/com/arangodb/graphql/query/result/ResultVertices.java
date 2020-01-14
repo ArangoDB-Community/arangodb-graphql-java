@@ -23,9 +23,7 @@ package com.arangodb.graphql.query.result;
 import com.arangodb.entity.BaseDocument;
 import com.arangodb.graphql.query.BaseDocumentPathEntity;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toMap;
@@ -54,13 +52,16 @@ public class ResultVertices {
         vertices = paths.stream()
                 .flatMap(x -> x.getVertices().stream())
                 .filter(x -> x != null)
-                .collect(toMap(BaseDocument::getId, x -> x, (x, y) -> x));
+                .collect(toMap(BaseDocument::getId,
+                        x -> x,
+                        (x, y) -> x,
+                        LinkedHashMap::new));
 
-        rootVertices = paths.stream()
+        rootVertices = new LinkedHashSet<>(paths.stream()
                 .map(x -> x.getVertices())
                 .map(x -> x.size() > 0 ? x.get(0) : null)
                 .filter(x -> x != null)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList()));
     }
 
     /**
@@ -70,6 +71,14 @@ public class ResultVertices {
      */
     public BaseDocument get(String id) {
         return vertices.get(id);
+    }
+
+    /**
+     * Get all vertices
+     * @return Get all vertices
+     */
+    public Map<String, BaseDocument> vertices() {
+        return vertices;
     }
 
     /**

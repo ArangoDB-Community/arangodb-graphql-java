@@ -26,7 +26,9 @@ import com.arangodb.graphql.query.BaseDocumentPathEntity;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -69,6 +71,7 @@ public class ResultVerticesTest {
         assertThat(resultVertices.get("A/1"), equalTo(a));
         assertThat(resultVertices.get("B/1"), equalTo(b));
         assertThat(resultVertices.get("C/1"), equalTo(c));
+        assertThat(new ArrayList<>(resultVertices.vertices().values()), equalTo(Arrays.asList(a, b, c)));
 
     }
 
