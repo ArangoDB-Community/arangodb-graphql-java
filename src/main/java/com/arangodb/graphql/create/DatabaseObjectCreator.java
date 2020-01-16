@@ -63,7 +63,11 @@ public class DatabaseObjectCreator {
     public void createDatabase(){
         ArangoDatabase db = arango.db(databaseName);
         if(!db.exists()){
+            logger.info("Auto Create Database {}", databaseName);
             db.create();
+        }
+        else{
+            logger.info("Database {} already exists", databaseName);
         }
     }
 
@@ -90,6 +94,7 @@ public class DatabaseObjectCreator {
 
             String collection = mapping.getCollection();
             if(collection != null){
+                logger.info("Auto Create Index on collection {} for fields {}", collection, mapping.getFields());
                 database.collection(collection).ensureHashIndex(mapping.getFields(), new HashIndexOptions());
             }
 
@@ -106,7 +111,11 @@ public class DatabaseObjectCreator {
         ArangoDatabase database = arango.db(databaseName);
 
         if(!database.collection(name).exists()){
+            logger.info("Auto Create Collection {}:{}", name, collectionType);
             database.collection(name).create(collectionCreateOptions);
+        }
+        else{
+            logger.info("Collection already exists {}:{}", name, collectionType);
         }
 
     }
