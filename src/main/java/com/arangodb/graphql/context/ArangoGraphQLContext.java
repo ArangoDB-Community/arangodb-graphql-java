@@ -49,6 +49,12 @@ public class ArangoGraphQLContext {
 
     private int max;
 
+    private Map sort;
+
+    private Integer limit;
+
+    private Integer skip;
+
     private ArangoFilterGroup rootFilters;
     private List<ArangoFilterGroup> traversalFilters;
 
@@ -66,13 +72,43 @@ public class ArangoGraphQLContext {
         edgeDirectives = new HashMap<>();
         rootTraversalDirection = new ArangoEdgeTraversalDirection();
 
+        setupLimit(dataFetchingEnvironment);
+        setupSort(dataFetchingEnvironment);
+
         setupRootCollection(dataFetchingEnvironment);
-        rootFilters = new ArangoRootFilterGroup(dataFetchingEnvironment.getArguments(), dataFetchingEnvironment.getFieldType());
+        Map<String, Object> filterArguments = filterArguments(dataFetchingEnvironment);
+        rootFilters = new ArangoRootFilterGroup(filterArguments, dataFetchingEnvironment.getFieldType());
         traversalFilters = new ArrayList<>();
 
         selectedFields = selectedFieldCollector.getFields();
         selectedFields.forEach(x -> processField(x));
 
+    }
+
+    private Map<String, Object> filterArguments(DataFetchingEnvironment dataFetchingEnvironment){
+        Map<String, Object> arguments = dataFetchingEnvironment.getArguments();
+        arguments.remove("sort");
+        arguments.remove("limit");
+        arguments.remove("skip");
+        return arguments;
+    }
+
+    private void setupSort(DataFetchingEnvironment dataFetchingEnvironment){
+        Object sort = dataFetchingEnvironment.getArgument("sort");
+        if(sort instanceof Map){
+            this.sort = (Map) sort;
+        }
+    }
+
+    private void setupLimit(DataFetchingEnvironment dataFetchingEnvironment){
+        Object limit = dataFetchingEnvironment.getArgument("limit");
+        if(limit instanceof Integer){
+            this.limit = (Integer) limit;
+            Object skip = dataFetchingEnvironment.getArgument("skip");
+            if(skip instanceof Integer){
+                this.skip = (Integer) skip;
+            }
+        }
     }
 
     private void setupRootCollection(DataFetchingEnvironment dataFetchingEnvironment) {
@@ -264,5 +300,29 @@ public class ArangoGraphQLContext {
      */
     public ArangoEdgeDirective edgeDirectiveFor(String qualifiedName) {
         return edgeDirectives.get(qualifiedName);
+    }
+
+    /**
+     *
+     * @return A sorted Map of top level attributes and their sort directions
+     */
+    public Map getSort() {
+        return sort;
+    }
+
+    /**
+     *
+     * @return The maximum number of top level results
+     */
+    public Integer getLimit() {
+        return limit;
+    }
+
+    /**
+     *
+     * @return The number of top level records to skip (used for pagination)
+     */
+    public Integer getSkip() {
+        return skip;
     }
 }

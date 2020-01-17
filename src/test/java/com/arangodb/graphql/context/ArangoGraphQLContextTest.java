@@ -115,6 +115,14 @@ public class ArangoGraphQLContextTest {
         when(selectedField.getQualifiedName()).thenReturn("id");
         when(selectedField.getArguments()).thenReturn(args);
 
+        when(dataFetchingEnvironment.getArgument("limit")).thenReturn(100);
+        when(dataFetchingEnvironment.getArgument("skip")).thenReturn(200);
+
+        Map sort = new HashMap();
+        sort.put("property", "ASC");
+        when(dataFetchingEnvironment.getArgument("sort")).thenReturn(sort);
+
+
         context = new ArangoGraphQLContext(dataFetchingEnvironment, selectedFieldCollector);
     }
 
@@ -194,5 +202,16 @@ public class ArangoGraphQLContextTest {
         ArangoEdgeDirective arangoEdgeDirective = context.edgeDirectiveFor("id");
         assertThat(arangoEdgeDirective.getCollection(), equalTo("myEdgeCollection"));
         assertThat(arangoEdgeDirective.getDirection(), equalTo(TraversalOptions.Direction.outbound));
+    }
+
+    @Test
+    public void limitAndSkip(){
+        assertThat(context.getLimit(), equalTo(100));
+        assertThat(context.getSkip(), equalTo(200));
+    }
+
+    @Test
+    public void sort(){
+        assertThat(context.getSort().get("property"), equalTo("ASC"));
     }
 }

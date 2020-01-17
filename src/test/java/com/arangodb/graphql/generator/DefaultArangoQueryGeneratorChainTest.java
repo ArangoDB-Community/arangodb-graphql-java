@@ -36,11 +36,13 @@ public class DefaultArangoQueryGeneratorChainTest {
 
         assertThat(chainItems.get(0), instanceOf(WithGenerator.class));
         assertThat(chainItems.get(1), instanceOf(RootForGenerator.class));
-        assertThat(chainItems.get(2), instanceOf(RootFilterGenerator.class));
-        assertThat(chainItems.get(3), instanceOf(TraversalForGenerator.class));
-        assertThat(chainItems.get(4), instanceOf(EdgeCollectionGenerator.class));
-        assertThat(chainItems.get(5), instanceOf(TraversalFilterGenerator.class));
-        assertThat(chainItems.get(6), instanceOf(ReturnStatementGenerator.class));
+        assertThat(chainItems.get(2), instanceOf(SortGenerator.class));
+        assertThat(chainItems.get(3), instanceOf(LimitGenerator.class));
+        assertThat(chainItems.get(4), instanceOf(RootFilterGenerator.class));
+        assertThat(chainItems.get(5), instanceOf(TraversalForGenerator.class));
+        assertThat(chainItems.get(6), instanceOf(EdgeCollectionGenerator.class));
+        assertThat(chainItems.get(7), instanceOf(TraversalFilterGenerator.class));
+        assertThat(chainItems.get(8), instanceOf(ReturnStatementGenerator.class));
 
     }
 
