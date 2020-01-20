@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+- updated arangodb-java-driver to v6.5.0
 - Added support for Sort, Limit and Skip
 - Automatic creation of database from GraphQL schema
 
